@@ -4,13 +4,15 @@ Steps
 
 .. list-table::
 
+
    * - Input
 
      - Output
 
-   * - ``steps-<filename>.yaml``
 
-     - ``source/includes/steps/<filename>.rst``
+   * - ``source/includes/steps-<filename>.yaml``
+
+     - ``build/<branch>/source[-edition]/includes/steps/<filename>.rst``
 
 YAML Format
 -----------
@@ -19,10 +21,17 @@ YAML Format
 
    title: <string>
    stepnum: <integer>
-   content: <string>
-   post: <string>
-   pre: <string>
    level: <integer>
+
+   inherit:
+     file: <path>
+     ref: <string>
+   replacement:
+     <old>: <new>
+
+   pre: <string>
+
+   content: <string>
 
    action:
      code: <string>
@@ -32,12 +41,118 @@ YAML Format
      post: <string>
      pre: <string>
 
-   replacement:
-     <old>: <new>
+   post: <string>
 
-   inherit:
-     file: <path>
-     ref: <string>
+.. note::
+
+   Single line values can be written right after the colon (``:``). Multiple line values must follow the colon with a pipe and then start the value indented under the parameter name.
+
+   .. list-table::
+
+      * - 
+         **Single-line value**
+
+         .. code-block:: rst
+
+            content: Test content block 
+        - 
+         **Multiple-line value**
+
+         .. code-block:: rst
+
+            content: |
+              Test content block 1.
+
+              Test content block 2.
+
+YAML Parameters and Values
+--------------------------
+
+.. list-table::
+   :header-rows: 1
+   :stub-columns: 1
+   :widths: 10 10 80
+
+   * - Parameter
+     - Value Type
+     - Value Description
+
+   * - title
+     - string
+     - A single sentence to describe the action taken in this step. It
+       should be enclosed in quotes and have no line breaks.
+
+   * - stepnum
+     - integer
+     - A non-negative integer to indicate the order of the given step.
+       Steps do not need to be written in order; they take their order
+       from this value. If the step is not part of its own list and
+       only meant to be inherited by another list of steps, this value
+       can be zero (``0``).
+
+   * - level
+     - integer
+     - *Optional.* A non-negative integer between 1 and 6. Steps are
+       formatted using HTML heading tags. This value sets how the step
+       is formatted. This is used to ensure a list of steps uses the
+       proper heading format where it falls in the outline of headings.
+
+   * - pre
+     - string
+     - *Optional.* Text displayed before inherited the contents of
+       ``content`` or ``action`` blocks.
+
+   * - inherit.file
+     - path
+     - *Optional.* 
+
+   * - inherit.ref
+     - string
+     - *Optional.* 
+
+   * - replacement.<old>
+     - <new>
+     - *Optional.* 
+
+   * - content
+     - string
+     - *Optional if* ``action`` *or* ``inherit`` *is used.* 
+
+   * - action.heading
+     - string
+     - *Optional.* A heading displayed 
+
+   * - action.pre
+     - string
+     - *Optional.* 
+
+   * - action.code
+     - string
+     - *Optional.* A block of programming code used as an example for
+       the given action.
+
+   * - action.language
+     - string
+     - *Required if* ``action.code`` *is used.* The short name for the
+       lexer to use to format the code provided in ``action.code``.
+       
+       .. seealso::
+
+          `Pygments list of Lexers <http://pygments.org/docs/lexers/>`_
+          for the list of possible lexers and their short names.
+
+   * - action.content
+     - string
+     - *Optional.* 
+
+   * - action.post
+     - string
+     - *Optional.* 
+
+   * - post
+     - string
+     - *Optional.* 
+
 
 ``action`` may also be either a string or a list. If it is a string, this is
 shorthand for filling out the ``content`` field. If it is a list, then a
